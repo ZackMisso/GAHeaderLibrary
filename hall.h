@@ -19,10 +19,11 @@ public:
     {
         // TODO
     }
-    
-    void recalculateHallOfFame(const vector< Ind<G, P>* >& pop)
+
+    int recalculateHallOfFame(const vector< Ind<G, P>* >& pop)
     {
         // TODO
+        return -1;
     }
 
     void replacePopWithHall(vector< Ind<G, P>* >& pop)

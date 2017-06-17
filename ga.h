@@ -13,53 +13,132 @@ class GA
 {
 private:
     // Pop* population;
-    vector< Ind<G, P>* > population; 
-    HallOfFame* hallOfFame;
+    vector< Ind<G, P>* > population;
+    HallOfFame<G, P>* hallOfFame;
     int numberOfGenerations;
     int maxPopulationSize;
     void* mutatorFunction;
     void* selectorFunction;
     void* crossoverFunction;
     void* fitnessFunction;
-    void* gaEvaluateFunction;
+    void* gaEvaluateFunction; // probably will not use
 
 public:
     GA()
     {
-        // TODO
-	hallOfFame = 0x0;
+        hallOfFame = 0x0;
+        numberOfGenerations = 100;
+        maxPopulationSize = 10;
+        mutatorFunction = 0x0;
+        selectorFunction = 0x0;
+        crossoverFunction = 0x0;
+        fitnessFunction = 0x0;
+        gaEvaluateFunction = 0x0;
+        // initialize population... TODO
     }
 
     GA(int numGen, int maxPop)
     {
-        // TODO
-	hallOfFame = 0x0;
+        hallOfFame = 0x0;
+        numberOfGenerations = numGen;
+        maxPopulationSize = maxPop;
+        mutatorFunction = 0x0;
+        selectorFunction = 0x0;
+        crossoverFunction = 0x0;
+        fitnessFunction = 0x0;
+        gaEvaluateFunction = 0x0;
+        // initialize population... TODO
     }
 
     GA(int numGen, int maxPop, void* mutFunc, void* selFunc, void* crosFunc, void* fitFunc, void* gaFunc)
     {
-        // TODO
-	hallOfFame = 0x0;
+        hallOfFame = 0x0;
+        numberOfGenerations = numGen;
+        maxPopulationSize = maxPop;
+        mutatorFunction = mutFunc;
+        selectorFunction = selFunc;
+        crossoverFunction = crosFunc;
+        fitnessFunction = fitFunc;
+        gaEvaluateFunction = gaFunc;
+        // initialize population... TODO
     }
 
     ~GA()
     {
         if(hallOfFame) delete hallOfFame;
-	// TODO
+        // delete population TODO
     }
 
     void createHallOfFame(int size)
     {
-        hallOfFame = new HallOfFame(size);
+        hallOfFame = new HallOfFame<G, P>(size);
     }
 
-    void evaluateSimple()
+    void initializeInitialPopulation()
     {
         // TODO
     }
 
+    void evaluateFitnesses()
+    {
+        // TODO
+    }
+
+    void sortByFitness(vector< Ind<G, P>* >& vec) const
+    {
+        // TODO
+    }
+
+    void selectIndividualsToBreed(vector< Ind<G, P>* >& vec) const
+    {
+        // TODO
+    }
+
+    void generateNextGeneration(const vector< Ind<G, P>* >& selInds, vector< Ind<G, P>* >& pop) const
+    {
+        // TODO
+    }
+
+    void cleanPopulation(int numSaved)
+    {
+        // TODO
+    }
+
+    void fillPopulation(const vector< Ind<G, P>* >& newPop)
+    {
+        // TODO
+    }
+
+    void evaluateSimple()
+    {
+        initializeInitialPopulation();
+
+        for (int i = 0; i < numberOfGenerations; i++)
+        {
+            // Replace these with function pointers ... TODO
+            
+            vector< Ind<G, P>* > sortedIndividuals;
+            vector< Ind<G, P>* > selectedIndividuals;
+            vector< Ind<G, P>* > newPopulation;
+            int numSaved;
+
+            evaluateFitnesses();
+            sortByFitness(sortedIndividuals);
+            updateHallOfFame(sortedIndividuals, numSaved);
+            selectIndividualsToBreed(sortedIndividuals, selectedIndividuals);
+            generateNextGeneration(selectedIndividuals, newPopulation);
+            cleanPopulation(numSaved);
+            fillPopulation(newPopulation);
+        }
+
+        evaluateFitnesses();
+        sortByFitness(population);
+
+        // Add Logging... TODO
+    }
+
     // getter methods
-    HallOfFame* getHallOfFame() { return hallOfFame; }
+    HallOfFame<G, P>* getHallOfFame() { return hallOfFame; }
     int getNumberOfGenerations() { return numberOfGenerations; }
     int getMaxPopulationSize() { return maxPopulationSize; }
 
