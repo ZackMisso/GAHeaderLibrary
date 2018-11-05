@@ -1,7 +1,7 @@
 #pragma once
 
-#include "pop.h"
-#include "hall.h"
+#include <ga/pop.h>
+#include <ga/hall.h>
 #include <vector>
 
 using namespace std;
@@ -116,7 +116,7 @@ public:
         for (int i = 0; i < numberOfGenerations; i++)
         {
             // Replace these with function pointers ... TODO
-            
+
             vector< Ind<G, P>* > sortedIndividuals;
             vector< Ind<G, P>* > selectedIndividuals;
             vector< Ind<G, P>* > newPopulation;

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ind.h"
+#include <ga/ind.h>
 
 template <typename G, typename P>
 class HallOfFame

@@ -2,8 +2,8 @@
 
 // Implementation of a Generic Individual
 
-#include "geno.h"
-#include "pheno.h"
+#include <ga/geno.h>
+#include <ga/pheno.h>
 
 template<typename G, typename P>
 class Ind

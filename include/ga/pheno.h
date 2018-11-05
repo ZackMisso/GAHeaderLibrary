@@ -2,7 +2,7 @@
 
 // Implementation of a Generic PhenoType. This is required to be extended by programs which use this project
 
-#include "geno.h"
+#include <ga/geno.h>
 
 template <typename G>
 class Pheno

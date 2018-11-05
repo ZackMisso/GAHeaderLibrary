@@ -3,7 +3,7 @@
 // Implementation of a Generic Population
 // Probably will delete this class
 
-#include "ind.h"
+#include <ga/ind.h>
 #include <iostream>
 #include <vector>
 
