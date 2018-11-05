@@ -2,7 +2,7 @@
 
 #include <iostream>
 #include <vector>
-#include "ga.h"
+#include "include/ga.h"
 
 using namespace std;
 

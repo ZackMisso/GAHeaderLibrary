@@ -1,3 +1,5 @@
 *.o
 *.swp
 gatest
+build/
+.DS_Store
