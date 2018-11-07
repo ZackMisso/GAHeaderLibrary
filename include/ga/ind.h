@@ -1,22 +1,35 @@
 #pragma once
 
-// Implementation of a Generic Individual
-
 #include <ga/geno.h>
 #include <ga/pheno.h>
 
-template<typename G, typename P>
-class Ind
+class Individual
 {
 private:
     long id;
-    G* genotype;
-    P* phenotype;
+    Geno geno;
     double fitness;
 
-public:
-    Ind()
-    {
-        // TODO
-    }
+    void evaluateFitness();
 };
+
+// Implementation of a Generic Individual
+
+// #include <ga/geno.h>
+// #include <ga/pheno.h>
+//
+// template<typename G, typename P>
+// class Ind
+// {
+// private:
+//     long id;
+//     G* genotype;
+//     P* phenotype;
+//     double fitness;
+//
+// public:
+//     Ind()
+//     {
+//         // TODO
+//     }
+// };

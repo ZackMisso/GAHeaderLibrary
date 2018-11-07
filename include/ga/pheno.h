@@ -4,13 +4,20 @@
 
 #include <ga/geno.h>
 
-template <typename G>
 class Pheno
 {
-private:
-public:
-    Pheno() { }
-
-    virtual void generatePheno(G geno) = 0;
-    virtual double evaluateFitness(void* fitnessFunc) = 0;
+    virtual double evaluateFitness() = 0;
 };
+
+// #include <ga/geno.h>
+//
+// template <typename G>
+// class Pheno
+// {
+// private:
+// public:
+//     Pheno() { }
+//
+//     virtual void generatePheno(G geno) = 0;
+//     virtual double evaluateFitness() = 0;
+// };

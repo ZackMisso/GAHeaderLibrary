@@ -44,6 +44,9 @@ add_executable(gatest
     include/ga/ind.h
     include/ga/pheno.h
     include/ga/pop.h
+    include/ga/cross.h
+    include/ga/mutate.h
+    include/ga/select.h
 
     src/main.cpp
 )
