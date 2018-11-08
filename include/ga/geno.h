@@ -8,7 +8,7 @@ class Geno
 public:
     virtual ~Geno() { }
 
-    virtual void initializeRandom() = 0;
+    virtual void initializeRandom(pcg32& rng) = 0;
     virtual Pheno generatePhenotype() const = 0;
     virtual double evaluateFitness() const = 0;
     virtual Geno* copy() const = 0;

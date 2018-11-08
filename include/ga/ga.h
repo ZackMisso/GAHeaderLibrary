@@ -57,7 +57,7 @@ public:
         for (int i = 0; i < maxPopulationSize; ++i)
         {
             G* newGeno = new G();
-            newGeno->initializeRandom();
+            newGeno->initializeRandom(rng);
             inds.push_back(new Individual(newGeno, globalIdCounter++));
         }
 
