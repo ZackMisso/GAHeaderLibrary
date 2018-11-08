@@ -25,15 +25,6 @@ public:
         return newInd;
     }
 
-    // copy constructors are not really useful since my implementation depends
-    // on pointers
-    // Individual(const Individual& toCopy)
-    // {
-    //     geno = toCopy.geno->copy();
-    //     fitness = toCopy.fitness;
-    //     id = toCopy.id;
-    // }
-
     ~Individual()
     {
         delete geno;
@@ -41,7 +32,9 @@ public:
 
     virtual void evaluateFitness()
     {
-        fitness = geno->generatePhenotype().evaluateFitness();
+        Pheno* pheno = geno->generatePhenotype();
+        fitness = pheno->evaluateFitness();
+        delete pheno;
     }
 
     void updateID(long param) { id = param; }

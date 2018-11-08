@@ -1,23 +1,20 @@
 #pragma once
 
-#include <ga/pop.h>
-#include <ga/hall.h>
 #include <ga/select.h>
-#include <pcg32.h>
-#include <vector>
 
 template<typename G, typename S,
          typename std::enable_if<std::is_base_of<Geno, G>::value>::type* = nullptr,
          typename std::enable_if<std::is_base_of<SelectorFunction, S>::value>::type* = nullptr>
 class GA
 {
-private:
+protected:
     std::vector<G*> bestGenInds;
     Population hallOfFame;
     pcg32 rng;
     S* selector;
     double crossoverChance;
     double mutationChance;
+    double selectionPercent;
     int numberOfGenerations;
     int maxPopulationSize;
     int hallOfFameSize;
@@ -72,13 +69,15 @@ public:
         }
     }
 
-    virtual Population generateNewGeneration(const Population& pop) const
+    virtual Population generateNewGeneration(const Population& pop, bool killOld) const
     {
         Population newPop = Population();
 
         if (pop.size() > 1)
         {
-            Population selectedForBreeding = selector->select(pop);
+            Population selectedForBreeding = selector->select(pop,
+                                                              rng,
+                                                              (int)(selectionPercent * maxPopulationSize));
 
             while (newPop.size() < maxPopulationSize)
             {
@@ -96,9 +95,12 @@ public:
             newPop[i]->getGeno()->mutate(rng, mutationChance);
         }
 
-        for (int i = 0; i < pop.size(); ++i)
+        if (killOld)
         {
-            delete pop[i];
+            for (int i = 0; i < pop.size(); ++i)
+            {
+                delete pop[i];
+            }
         }
 
         return newPop;
@@ -144,7 +146,7 @@ public:
 
             if (i != maxPopulationSize - 1)
             {
-                pop = generateNewGeneration(pop);
+                pop = generateNewGeneration(pop, true);
             }
         }
     }
