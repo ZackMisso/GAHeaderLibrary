@@ -2,6 +2,11 @@
 
 #include <ga/ind.h>
 
+class HallOfFame
+{
+    // TODO
+};
+
 // template <typename G, typename P>
 // class HallOfFame
 // {

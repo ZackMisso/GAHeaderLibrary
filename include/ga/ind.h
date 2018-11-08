@@ -1,35 +1,59 @@
 #pragma once
 
+// the individual class is an abstraction on top of the genotype implementation
+// to add an interface layer for the GA algorithm to store information without
+// requiring the genotype extensions to keep track of this information.
+
 #include <ga/geno.h>
 #include <ga/pheno.h>
 
 class Individual
 {
 private:
+    Geno* geno;
     long id;
-    Geno geno;
     double fitness;
 
-    void evaluateFitness();
+public:
+    Individual(Geno* geno, long id)
+        : geno(geno), id(id), fitness(0.0) { }
+
+    Individual* copy() const
+    {
+        Individual* newInd = new Individual(geno->copy(), id);
+        newInd->fitness = fitness;
+        return newInd;
+    }
+
+    // copy constructors are not really useful since my implementation depends
+    // on pointers
+    // Individual(const Individual& toCopy)
+    // {
+    //     geno = toCopy.geno->copy();
+    //     fitness = toCopy.fitness;
+    //     id = toCopy.id;
+    // }
+
+    ~Individual()
+    {
+        delete geno;
+    }
+
+    virtual void evaluateFitness()
+    {
+        fitness = geno->generatePhenotype().evaluateFitness();
+    }
+
+    void updateID(long param) { id = param; }
+
+    // getter methods
+    Geno* getGeno() const { return geno; }
+    double getFitness() const { return fitness; }
+    long getId() const { return id; }
 };
 
-// Implementation of a Generic Individual
-
-// #include <ga/geno.h>
-// #include <ga/pheno.h>
-//
-// template<typename G, typename P>
-// class Ind
-// {
-// private:
-//     long id;
-//     G* genotype;
-//     P* phenotype;
-//     double fitness;
-//
-// public:
-//     Ind()
-//     {
-//         // TODO
-//     }
-// };
+struct IndividualComparator {
+    bool operator()(const Individual* indOne, const Individual* indTwo) const {
+        return indOne->getFitness() < indTwo->getFitness();
+    }
+};

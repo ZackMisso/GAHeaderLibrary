@@ -29,6 +29,7 @@ endif()
 include_directories(
     # Include directory
     ${CMAKE_CURRENT_SOURCE_DIR}/include/
+    ${CMAKE_CURRENT_SOURCE_DIR}/ext/pcg32/
 )
 
 if(APPLE)

@@ -1,7 +1,11 @@
 #pragma once
 
-// template <typename G, typename P>
-// class SelectorFunction
-// {
-//     virtual vector<Ind<G, P>*> select(const vector<Ind<G, P>* >& pop) const = 0;
-// };
+#include <ga/ind.h>
+#include <vector>
+
+typedef std::vector<Individual*> Population;
+
+class SelectorFunction
+{
+    virtual Population select(Population& pop) const = 0;
+};

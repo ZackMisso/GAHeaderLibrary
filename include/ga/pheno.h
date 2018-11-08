@@ -6,6 +6,7 @@
 
 class Pheno
 {
+public:
     virtual double evaluateFitness() = 0;
 };
 
