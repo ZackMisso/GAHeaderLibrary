@@ -5,12 +5,25 @@
 
 class Geno
 {
+protected:
+    int size;
+
 public:
+    Geno(int size) : size(size) { }
     virtual ~Geno() { }
+
+    float evaluateFitness() const
+    {
+        Pheno* pheno = generatePhenotype();
+        float fitness = pheno->evaluateFitness();
+        delete pheno;
+        return fitness;
+    }
 
     virtual void initializeRandom(pcg32& rng) = 0;
     virtual Pheno* generatePhenotype() const = 0;
     virtual Geno* copy() const = 0;
+    virtual void print() const = 0;
 
     // mutation and crossover are drastically dependent on the genotype
     // implementation so those are left as extensions
@@ -24,10 +37,9 @@ class BitGeno : public Geno
 {
 protected:
     std::vector<bool> bitstring;
-    int size;
 
 public:
-    BitGeno(int size) : size(size)
+    BitGeno(int size) : Geno(size)
     {
         bitstring = std::vector<bool>();
     }
@@ -67,7 +79,7 @@ public:
         {
             if (rng.nextFloat() < mutateChance)
             {
-                bitstring[i] = false;
+                bitstring[i] = !bitstring[i];
             }
         }
     }
@@ -91,5 +103,16 @@ public:
         }
 
         return newGeno;
+    }
+
+    virtual void print() const
+    {
+        for (int i = 0; i < bitstring.size(); ++i)
+        {
+            if (bitstring[i]) std::cout << "1";
+            else std::cout << "0";
+        }
+
+        std::cout << std::endl;
     }
 };

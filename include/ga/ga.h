@@ -12,20 +12,22 @@ protected:
     Population hallOfFame;
     pcg32 rng;
     S* selector;
-    double crossoverChance;
-    double mutationChance;
-    double selectionPercent;
+    float crossoverChance;
+    float mutationChance;
+    float selectionPercent;
     int numberOfGenerations;
     int maxPopulationSize;
     int hallOfFameSize;
+    int individualSize;
     long globalIdCounter;
     long seed;
 
 public:
-    GA(int numGen = 10, int maxPop = 10, int hallSize = 2, long seed = 0x30352)
+    GA(int numGen = 10, int maxPop = 10, int hallSize = 2, int indSize = 20, long seed = 0x30352)
         : numberOfGenerations(numGen),
           maxPopulationSize(maxPop),
           hallOfFameSize(hallSize),
+          individualSize(indSize),
           seed(seed)
     {
         hallOfFame = Population();
@@ -47,13 +49,13 @@ public:
         delete selector;
     }
 
-    virtual Population initializeInitialPopulation() const
+    virtual Population initializeInitialPopulation()
     {
         Population inds = Population();
 
         for (int i = 0; i < maxPopulationSize; ++i)
         {
-            G* newGeno = new G();
+            G* newGeno = new G(individualSize);
             newGeno->initializeRandom(rng);
             inds.push_back(new Individual(newGeno, globalIdCounter++));
         }
@@ -69,25 +71,36 @@ public:
         }
     }
 
-    virtual Population generateNewGeneration(const Population& pop, bool killOld) const
+    virtual Population generateNewGeneration(Population& pop, bool killOld=true)
     {
         Population newPop = Population();
 
         if (pop.size() > 1)
         {
-            Population selectedForBreeding = selector->select(pop,
-                                                              rng,
-                                                              (int)(selectionPercent * maxPopulationSize));
+            Population selected = selector->select(pop,
+                                                   rng,
+                                                   (int)(selectionPercent * maxPopulationSize));
 
-            while (newPop.size() < maxPopulationSize)
+            while (newPop.size() < maxPopulationSize - hallOfFameSize)
             {
-                G* one = pop[int(rng.nextFloat() * pop.size())];
-                G* two = one;
+                Geno* one = selected[int(rng.nextFloat() * selected.size())]->getGeno();
+                Geno* two = one;
 
-                while (one == two) two = pop[int(rng.nextFloat() * pop.size())];
+                while (one == two)
+                {
+                    two = selected[int(rng.nextFloat() * selected.size())]->getGeno();
+                }
 
-                newPop.push_back(one->crossover(two, rng, crossoverChance));
+                Individual* newInd = new Individual(one->crossover(two, rng, crossoverChance),
+                                                    globalIdCounter++);
+
+                newPop.push_back(newInd);
             }
+        }
+
+        for (int i = 0; i < hallOfFame.size(); ++i)
+        {
+            newPop.push_back(hallOfFame[i]->copy());
         }
 
         for (int i = 0; i < newPop.size(); ++i)
@@ -113,17 +126,27 @@ public:
         int i = 0;
         int j = 0;
 
-        while (i + j < hallOfFameSize)
+        if (hallOfFame.size() == 0)
         {
-            if (pop[i]->getFitness() < hallOfFame[j]->getFitness())
-            {
-                newHallOfFame.push_back(hallOfFame[j]->copy());
-                ++j;
-            }
-            else
+            for (int i = 0; i < hallOfFameSize; ++i)
             {
                 newHallOfFame.push_back(pop[i]->copy());
-                ++i;
+            }
+        }
+        else
+        {
+            while (i + j < hallOfFameSize)
+            {
+                if (pop[i]->getFitness() < hallOfFame[j]->getFitness())
+                {
+                    newHallOfFame.push_back(hallOfFame[j]->copy());
+                    ++j;
+                }
+                else
+                {
+                    newHallOfFame.push_back(pop[i]->copy());
+                    ++i;
+                }
             }
         }
 
@@ -131,23 +154,35 @@ public:
 
         hallOfFame = newHallOfFame;
 
-        bestGenInds.push_back(hallOfFame[0]->copy());
+        bestGenInds.push_back((G*)(hallOfFame[0]->getGeno()->copy()));
     }
 
     virtual void evolve()
     {
         Population pop = initializeInitialPopulation();
 
-        for (int i = 0; i < maxPopulationSize; ++i)
+        for (int i = 0; i < numberOfGenerations; ++i)
         {
             evaluateFitnesses(pop);
             std::sort(pop.begin(), pop.end(), IndividualComparator());
             updateHallOfFame(pop);
 
+            // for (int i = 0; i < pop.size(); ++i)
+            // {
+            //     std::cout << "index " << i << " fitness: " << pop[i]->getFitness() << std::endl;
+            // }
+            // std::cout << std::endl;
+
             if (i != maxPopulationSize - 1)
             {
-                pop = generateNewGeneration(pop, true);
+                pop = generateNewGeneration(pop);
             }
         }
     }
+
+    void setCrossoverChance(float param) { crossoverChance = param; }
+    void setMutationChance(float param) { mutationChance = param; }
+    void setSelectionPercent(float param) { selectionPercent = param; }
+
+    std::vector<G*> getBestGenInds() const { return bestGenInds; }
 };

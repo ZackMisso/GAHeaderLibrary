@@ -47,6 +47,6 @@ public:
 
 struct IndividualComparator {
     bool operator()(const Individual* indOne, const Individual* indTwo) const {
-        return indOne->getFitness() < indTwo->getFitness();
+        return indOne->getFitness() > indTwo->getFitness();
     }
 };
