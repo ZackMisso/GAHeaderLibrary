@@ -8,7 +8,7 @@ template<typename G, typename S,
 class GA
 {
 protected:
-    std::vector<G*> bestGenInds;
+    std::vector<Geno*> bestGenInds;
     Population hallOfFame;
     pcg32 rng;
     S* selector;
@@ -31,9 +31,13 @@ public:
           seed(seed)
     {
         hallOfFame = Population();
-        bestGenInds = std::vector<G*>();
+        bestGenInds = std::vector<Geno*>();
         globalIdCounter = 0;
         selector = new S();
+
+        crossoverChance = 0.2f;
+        mutationChance = 0.05f;
+        selectionPercent = 0.25f;
 
         // set up rng
         srand(seed);
@@ -83,13 +87,16 @@ public:
 
             while (newPop.size() < maxPopulationSize - hallOfFameSize)
             {
-                Geno* one = selected[int(rng.nextFloat() * selected.size())]->getGeno();
-                Geno* two = one;
+                int selectedOne = int(rng.nextFloat() * selected.size());
+                int selectedTwo = selectedOne;
 
-                while (one == two)
+                while (selectedOne == selectedTwo)
                 {
-                    two = selected[int(rng.nextFloat() * selected.size())]->getGeno();
+                    selectedTwo = int(rng.nextFloat() * selected.size());
                 }
+
+                Geno* one = selected[selectedOne]->getGeno();
+                Geno* two = selected[selectedTwo]->getGeno();
 
                 Individual* newInd = new Individual(one->crossover(two, rng, crossoverChance),
                                                     globalIdCounter++);
@@ -154,7 +161,7 @@ public:
 
         hallOfFame = newHallOfFame;
 
-        bestGenInds.push_back((G*)(hallOfFame[0]->getGeno()->copy()));
+        bestGenInds.push_back(hallOfFame[0]->getGeno()->copy());
     }
 
     virtual void evolve()
@@ -167,12 +174,6 @@ public:
             std::sort(pop.begin(), pop.end(), IndividualComparator());
             updateHallOfFame(pop);
 
-            // for (int i = 0; i < pop.size(); ++i)
-            // {
-            //     std::cout << "index " << i << " fitness: " << pop[i]->getFitness() << std::endl;
-            // }
-            // std::cout << std::endl;
-
             if (i != maxPopulationSize - 1)
             {
                 pop = generateNewGeneration(pop);
@@ -184,5 +185,5 @@ public:
     void setMutationChance(float param) { mutationChance = param; }
     void setSelectionPercent(float param) { selectionPercent = param; }
 
-    std::vector<G*> getBestGenInds() const { return bestGenInds; }
+    std::vector<Geno*> getBestGenInds() const { return bestGenInds; }
 };

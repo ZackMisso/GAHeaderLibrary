@@ -30,11 +30,9 @@ public:
         delete geno;
     }
 
-    virtual void evaluateFitness()
+    void evaluateFitness()
     {
-        Pheno* pheno = geno->generatePhenotype();
-        fitness = pheno->evaluateFitness();
-        delete pheno;
+        fitness = geno->evaluateFitness();
     }
 
     void updateID(long param) { id = param; }
