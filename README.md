@@ -1,35 +1,49 @@
-This is a small header library for a generic genetic algorithm implementation.
+# GAHeaderLibrary
 
-Currently supported genotype representations:
-    bitstring representation (BitGeno)
-    real valued representation (FloatGeno)
+A small header library for quick integration of genetic algorithms into other
+C++ projects.
 
-Currently supported selection methods:
-    Stochastic Universal Sampling (SUS)
+## Currently Supported GenoType Representations
+* Bitstring representation (BitGeno)
+* real valued representation (FloatGeno)
 
-How to use this library:
+## Currently Supported Selection Techniques
+* Stochastic Universal Sampling
 
-'''
-GA<BitGeno, SUS> ga = GA<BitGeno, SUS>(30, 25, 3);
+## How To Integrate
+
+### Implement your GenoType
+
+```
+class YourClass : public Geno
+{
+    void initializeRandom(pcg32&) {}
+    Pheno* generatePhenotype() {}
+    Geno* copy() {}
+    void mutate(pcg32&, float) {}
+    Geno* crossover(Geno*, pcg32&, float) {}
+};
+```
+
+### Implement your PhenoType
+```
+class YourPheno : public Pheno
+{
+    double evaluateFitness() {}
+};
+```
+
+### Run the GA
+```
+GA<YourGeno, SUS> ga = GA<YourGeno, SUS>();
 ga.evolve();
 Geno* best = ga.getBestGenInds()[0];
+
+cout << "Best Individual: " << endl;
+best->print();
 cout << "Best Fitness: " << best->evaluateFitness() << endl;
-'''
+```
 
-Dummy phenotype implementations are included in this repo for unit testing,
-however, to fully utilize this library you must extend the PhenoType class and
-GenoType class.
+## Authors
 
-Required genotype methods to extend:
-'''
-void initializeRandom(pcg32&)
-Pheno* generatePhenotype()
-Geno* copy()
-void mutate(pcg32&, float)
-Geno* crossover(Geno*, pcg32&, float)
-'''
-
-Required phenotype methods to extend:
-'''
-double evaluateFitness()
-'''
+* **Zack Misso**
